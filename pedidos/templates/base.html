@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>BurgerQueen - {% block title %}Inicio{% endblock %}</title>
+
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+      />
+
+      <style>
+        /* Un poco de estilo extra para que se vea moderno */
+        body {
+          background-color: #f8f9fa;
+        }
+        .navbar-brand {
+          font-weight: bold;
+          letter-spacing: 1px;
+        }
+        .card {
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          border: none;
+        }
+      </style>
+    </head>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'menu' %}">🍔 BurgerQueen</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'menu' %}">Ver Menú</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{% url 'crear_pedido' %}"
+                style="
+                  background-color: #ffc107;
+                  color: #000;
+                  border-radius: 0.375rem;
+                  padding: 0.5rem 1rem;
+                  margin-left: 0.5rem;
+                "
+                >Hacer Pedido</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+      {% if messages %} {% for message in messages %}
+      <div
+        class="alert alert-{{ message.tags }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %} {% endif %} {% block content %} {% endblock %}
+    </main>
+
+    <footer class="text-center py-4 text-muted mt-5 border-top">
+      <small>&copy; 2024 BurgerQueen Inc. - El mejor sabor con Django.</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

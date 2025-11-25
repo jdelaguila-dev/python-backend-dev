@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block title %}Detalle de {{ producto.nombre
+}}{%endblock title %} {% block content %}
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ producto.nombre }}</h5>
+        <p class="card-text">{{ producto.descripcion }}</p>
+        <p class="card-text"><strong>Precio:</strong> ${{ producto.precio }}</p>
+      </div>
+    </div>
+    <div class="mt-3">
+      <a href="{% url 'menu' %}" class="btn btn-primary">Volver al Menú</a>
+      <a
+        href="{% url 'crear_pedido' %}?producto_id={{ producto.id }}"
+        class="btn btn-success"
+        >Realizar Pedido</a
+      >
+    </div>
+    {% endblock content %}
+  </div>
+</div>
