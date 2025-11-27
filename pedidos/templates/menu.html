@@ -7,6 +7,18 @@
     {% for producto in productos %}
     <div class="col-md-4 mb-3">
       <div class="card">
+
+        {% if producto.imagen %}
+        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 300px; object-fit: cover">
+        {% else %}
+        <img
+          src="https://placehold.co/300x200?text=Sin+Imagen"
+          class="card-img-top"
+          alt="Sin imagen"
+        />        
+        {% endif %}
+
+
         <div class="card-body">
           <a
             href="{% url 'detalle_producto' producto.pk %}"

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Control{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Panel de Administración</h1>
+    <a href="{% url 'crear_producto' %}" class="btn btn-success">
+        ➕ Nuevo Producto
+    </a>
+</div>
+
+<div class="card">
+    <table class="table table-hover mb-0">
+        <thead class="table-dark">
+            <tr>
+                <th>Imagen</th>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" width="50" height="50" style="object-fit: cover; border-radius: 5px;">
+                    {% else %}
+                        <span>📷</span>
+                    {% endif %}
+                </td>
+                <td>{{ producto.nombre }}</td>
+                <td>${{ producto.precio }}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary">Editar</button>
+                    <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

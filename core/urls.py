@@ -14,11 +14,37 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings  # Importamos settings para manejar archivos media
+from django.conf.urls.static import (
+    static,
+)  # Importamos static para manejar archivos media
+
+# 1. Imports de DRF
+from rest_framework.routers import DefaultRouter
+
+# Importamos el ViewSet desde la app
+from pedidos.views import ProductoViewSet, CategoriaViewSet, PedidoViewSet
+
+# 2. Configuración del Router (Nivel Proyecto)
+router = DefaultRouter()
+router.register(r"productos", ProductoViewSet)
+router.register(r"categorias", CategoriaViewSet)
+router.register(r"pedidos", PedidoViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    # Esto habilita /accounts/login/, /accounts/logout/, etc.
+    path("accounts/", include("django.contrib.auth.urls")),
+    # RUTA WEB (MVT) - Todo lo visual entra por /menu/
     # Delegamos todo lo que empiece con "menu/" a nuestra app de pedidos
-    path('menu/', include('pedidos.urls')),
+    path("menu/", include("pedidos.urls")),
+    # RUTA API (DRF) - Todo lo de la API entra por /api/
+    path("api/", include(router.urls)),
 ]
+
+# Configuración para servir archivos media en desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
