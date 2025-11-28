@@ -133,5 +133,6 @@ El sistema utiliza 3 tablas principales (definidas en `pedidos/models.py`):
 | Aplicar migraciones a la BD | `python manage.py migrate` |
 | Correr el servidor | `python manage.py runserver` |
 | Crear superusuario | `python manage.py createsuperuser` |
+| Poblar datos de ejemplo | `python manage.py seed_data` |
 
 ¡Disfruta programando con Django! 🐍✨
