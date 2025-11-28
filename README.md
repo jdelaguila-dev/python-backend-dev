@@ -43,11 +43,13 @@ source venv/bin/activate
 *(Verás que aparece `(venv)` al principio de tu línea de comandos)*.
 
 ### 3. Instalar Dependencias
-Este proyecto utiliza Django. Instálalo con pip:
+Las librerías necesarias están listadas en `requirements.txt`. Instálalas con pip:
 
 ```bash
-pip install django
+pip install -r requirements.txt
 ```
+
+> Incluye `Django`, `djangorestframework` y `Pillow` (para manejar imágenes de productos).
 
 ### 4. Preparar la Base de Datos
 Django usa una base de datos SQLite por defecto. Necesitamos crear las tablas iniciales:
