@@ -24,6 +24,10 @@ from django.conf.urls.static import (
 
 # 1. Imports de DRF
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,  # Login: Recibe user/pass, devuelve Access Token + Refresh Token
+    TokenRefreshView,  # Refresco: Recibe Refresh Token, devuelve nuevo Access Token
+)
 
 # Importamos el ViewSet desde la app
 from pedidos.views import ProductoViewSet, CategoriaViewSet, PedidoViewSet
@@ -43,6 +47,9 @@ urlpatterns = [
     path("menu/", include("pedidos.urls")),
     # RUTA API (DRF) - Todo lo de la API entra por /api/
     path("api/", include(router.urls)),
+    # Rutas para JWT
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
 
 # Configuración para servir archivos media en desarrollo

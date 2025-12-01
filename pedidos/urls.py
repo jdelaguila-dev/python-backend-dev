@@ -5,6 +5,7 @@ from .views import (
     menu_view,
     realizar_pedido_view,
     detalle_producto_view,
+    registro,
 )
 
 
@@ -19,4 +20,6 @@ urlpatterns = [
     path("producto/nuevo/", crear_producto, name="crear_producto"),
     # www.burgerqueen.com/pedidos/dashboard/
     path("dashboard/", dashboard, name="dashboard"),
+    # www.burgerqueen.com/pedidos/registro/
+    path("registro/", registro, name="registro"),
 ]

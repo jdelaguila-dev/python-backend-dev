@@ -46,9 +46,11 @@
             </li>
 
             {% if user.is_authenticated %}
+            {% if user.is_staff %}
             <li class="nav-item">
                 <a class="nav-link fw-bold text-primary" href="{% url 'dashboard' %}">⚙️ Dashboard</a>
             </li>
+            {% endif %}
             <li class="nav-item ms-3">
                 <span class="navbar-text me-2">Hola, {{ user.username }}</span>
                 <form action="{% url 'logout' %}" method="post" class="d-inline">

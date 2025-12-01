@@ -9,7 +9,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with transaction.atomic():
-            self.stdout.write(self.style.MIGRATE_HEADING("Creating Burger Queen demo data..."))
+            self.stdout.write(
+                self.style.MIGRATE_HEADING("Creating Burger Queen demo data...")
+            )
             categorias = self._create_categorias()
             productos = self._create_productos(categorias)
             self._create_pedidos(productos)
@@ -29,7 +31,9 @@ class Command(BaseCommand):
         }
         categorias = {}
         for nombre, campos in catalog.items():
-            categoria, _created = Categoria.objects.get_or_create(nombre=nombre, defaults=campos)
+            categoria, _created = Categoria.objects.get_or_create(
+                nombre=nombre, defaults=campos
+            )
             categorias[nombre] = categoria
             action = "Created" if _created else "Skipped"
             self.stdout.write(f"  {action} categoria: {nombre}")

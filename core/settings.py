@@ -41,9 +41,17 @@ INSTALLED_APPS = [
     # Mis apps
     "rest_framework",
     "pedidos",
+    "corsheaders",  # App que gestiona las cabeceras
+    "django_filters",  # Filtros avanzados para DRF
 ]
 
 MIDDLEWARE = [
+    # IMPORTANTE: CorsMiddleware debe ir lo más arriba posible.
+    # Debe interceptar la petición ANTES de que Django intente procesarla.
+    # Si la pones al final, Django podría bloquear la petición antes de saber que es válida por CORS.
+    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -52,6 +60,15 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# Permitir todas las solicitudes CORS (no recomendado para producción)
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+# CORS_ALLOW_ALL_ORIGINS = [
+#     "http://localhost:3000",  # Permitir solicitudes desde este origen
+#     "http://www.tu-dominio.com",  # Permitir solicitudes desde este dominio
+# ]
 
 ROOT_URLCONF = "core.urls"
 
@@ -132,3 +149,25 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Configuración de login
 LOGIN_REDIRECT_URL = "menu"
 LOGOUT_REDIRECT_URL = "menu"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        # 1. JWT: Para la App Móvil / Postman (La prioridad)
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        # 2. Session: Para que TÚ puedas navegar la API en el navegador (Browsable API)
+        #    y para que el Admin siga funcionando integrado si fuera necesario.
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ),
+    # Throttling (Límites de Peticiones)
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",  # Para anónimos
+        "rest_framework.throttling.UserRateThrottle",  # Para logueados
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "10/minute",  # Anónimos: Solo 5 veces por minuto (Prueba agresiva)
+        "user": "100/day",  # Usuarios: 100 al día
+    },
+}
