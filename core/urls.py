@@ -17,36 +17,22 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings  # Importamos settings para manejar archivos media
-from django.conf.urls.static import (
-    static,
-)  # Importamos static para manejar archivos media
+from django.conf import settings
+from django.conf.urls.static import static
 
-# 1. Imports de DRF
-from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,  # Login: Recibe user/pass, devuelve Access Token + Refresh Token
-    TokenRefreshView,  # Refresco: Recibe Refresh Token, devuelve nuevo Access Token
+    TokenObtainPairView,
+    TokenRefreshView,
 )
-
-# Importamos el ViewSet desde la app
-from pedidos.views import ProductoViewSet, CategoriaViewSet, PedidoViewSet
-
-# 2. Configuración del Router (Nivel Proyecto)
-router = DefaultRouter()
-router.register(r"productos", ProductoViewSet)
-router.register(r"categorias", CategoriaViewSet)
-router.register(r"pedidos", PedidoViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     # Esto habilita /accounts/login/, /accounts/logout/, etc.
     path("accounts/", include("django.contrib.auth.urls")),
     # RUTA WEB (MVT) - Todo lo visual entra por /menu/
-    # Delegamos todo lo que empiece con "menu/" a nuestra app de pedidos
     path("menu/", include("pedidos.urls")),
     # RUTA API (DRF) - Todo lo de la API entra por /api/
-    path("api/", include(router.urls)),
+    path("api/", include("pedidos.api_urls")),
     # Rutas para JWT
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

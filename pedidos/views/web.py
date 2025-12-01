@@ -1,23 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-
-from .forms import PedidoForm, ProductoForm
-from .models import Producto, Categoria, Pedido
-from rest_framework import viewsets
-from .serializers import ProductoSerializer, CategoriaSerializer, PedidoSerializer
-
-# Decorador para proteger vistas que requieren login
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
-# IsAuthenticated: Bloquea a cualquiera que no tenga credenciales.
-# IsAuthenticatedOrReadOnly: Deja LEER a todos, pero solo deja ESCRIBIR a usuarios logueados.
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-
-# Django filter
-from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
+from ..forms import PedidoForm, ProductoForm
+from ..models import Producto
 
 
 # Función de comprobación: ¿Es miembro del staff?
@@ -96,53 +84,6 @@ def crear_producto(request):
 def dashboard(request):
     productos = Producto.objects.all()
     return render(request, "dashboard.html", {"productos": productos})
-
-
-# ViewSet: ¡Hace la magia completa!
-# Crea automáticamente la lógica para: Listar, Crear, Ver Detalle, Actualizar y Borrar.
-class ProductoViewSet(viewsets.ModelViewSet):
-    queryset = Producto.objects.all()
-    serializer_class = ProductoSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-        filters.OrderingFilter,
-    ]
-
-    # Filtrar por categoria
-    filterset_fields = [
-        "categoria"
-    ]  # Permite filtrar productos por categoría (ejemplo: ?categoria=1)
-
-    # Buscar por nombre o descripción
-    search_fields = [
-        "nombre",
-        "descripcion",
-    ]  # Permite buscar productos por nombre o descripción\
-
-    # Ordenar por precio
-    ordering_fields = [
-        "precio"
-    ]  # Permite ordenar productos por precio (ejemplo: ?ordering=precio o ?ordering=-precio)
-
-
-# ViewSet para Categoría
-class CategoriaViewSet(viewsets.ModelViewSet):
-    queryset = Categoria.objects.all()
-    serializer_class = CategoriaSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-
-# ViewSet para Pedido
-# Aquí NO usamos ReadOnly. Si no tienes token, no ves nada.
-# Son datos sensibles de clientes.
-class PedidoViewSet(viewsets.ModelViewSet):
-    queryset = Pedido.objects.all()
-    serializer_class = PedidoSerializer
-    # AGREGAR ESTO (Ojo que es diferente al de productos):
-    permission_classes = [IsAuthenticated]
 
 
 # Vista para registro de usaurios
