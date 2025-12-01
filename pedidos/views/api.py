@@ -1,9 +1,30 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters as drf_filters
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters
 
 from ..models import Producto, Categoria, Pedido
 from ..serializers import ProductoSerializer, CategoriaSerializer, PedidoSerializer
+
+
+# Definimos una clase para filtros avanzados
+class ProductoFilter(filters.FilterSet):
+    # Filtro de rango de precio (min y max)
+    precio_min = filters.NumberFilter(
+        field_name="precio", lookup_expr="gte"
+    )  # precio >= X
+    precio_max = filters.NumberFilter(
+        field_name="precio", lookup_expr="lte"
+    )  # precio <= X
+
+    # Filtro por ingrediente (ManyToMany)
+    # Permite buscar productos que tengan cierto ingrediente (Ej: ?ingrediente=Tocino)
+    ingrediente = filters.CharFilter(
+        field_name="ingredientes__nombre", lookup_expr="icontains"
+    )
+
+    class Meta:
+        model = Producto
+        fields = ["categoria", "precio_min", "precio_max", "ingrediente"]
 
 
 # ViewSet: ¡Hace la magia completa!
@@ -13,16 +34,15 @@ class ProductoViewSet(viewsets.ModelViewSet):
     serializer_class = ProductoSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    # 1. Activamos los backends de filtrado
     filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-        filters.OrderingFilter,
+        filters.DjangoFilterBackend,  # Para nuestros filtros de campos (precio, categoria)
+        drf_filters.SearchFilter,  # Para ?search= (Texto)
+        drf_filters.OrderingFilter,  # Para ?ordering= (Orden)
     ]
 
-    # Filtrar por categoria
-    filterset_fields = [
-        "categoria"
-    ]  # Permite filtrar productos por categoría (ejemplo: ?categoria=1)
+    # Usamos nuestra clase de filtros personalizada
+    filterset_class = ProductoFilter
 
     # Buscar por nombre o descripción
     search_fields = [

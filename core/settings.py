@@ -181,4 +181,5 @@ REST_FRAMEWORK = {
         "anon": "10/minute",  # Anónimos: Solo 5 veces por minuto (Prueba agresiva)
         "user": "100/day",  # Usuarios: 100 al día
     },
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }

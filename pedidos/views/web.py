@@ -5,7 +5,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
 from ..forms import PedidoForm, ProductoForm
-from ..models import Producto
+from ..models import Producto, Categoria
+from django.db.models import Q  # Importar Q para búsquedas avanzadas (OR)
 
 
 # Función de comprobación: ¿Es miembro del staff?
@@ -14,13 +15,34 @@ def es_admin(user):
 
 
 def menu_view(request):
-    # Consultar a la Base de Datos (ORM)
-    # "Traeme todos los productos que existen"
+    # 1. Empezamos trayendo TODOS los productos
     productos = Producto.objects.all()
+
+    # 2. Capturamos los parámetros de la URL (Query Params)
+    # Ejemplo: Si la URL es /menu/?q=hamburguesa&cat=2
+    busqueda = request.GET.get("q")  # Captura el texto del buscador
+    categoria_id = request.GET.get("cat")  # Captura el filtro de categoría
+
+    # 3. Lógica del Buscador (Texto)
+    if busqueda:
+        # Usamos Q para decir: "Nombre contiene X" O "Descripción contiene X"
+        productos = productos.filter(
+            Q(nombre__icontains=busqueda) | Q(descripcion__icontains=busqueda)
+        )
+
+    # 4. Lógica del Filtro (Categoría)
+    if categoria_id:
+        productos = productos.filter(categoria_id=categoria_id)
+
+    # Traemos las categorías para llenar el <select> del filtro
+    categorias = Categoria.objects.all()
 
     # Renderizar la plantilla HTML
     # Es el "carrito" donde enviamos los datos al HTML
-    context = {"productos": productos}
+    context = {
+        "productos": productos,
+        "categorias": categorias,  # Enviamos categorías al template
+    }
     # Renderizar (Pintar) la plantilla
     return render(request, "menu.html", context)
 
