@@ -44,6 +44,11 @@ class ProductoViewSet(viewsets.ModelViewSet):
     # Usamos nuestra clase de filtros personalizada
     filterset_class = ProductoFilter
 
+    # Filtrar por categoria
+    filterset_fields = [
+        "categoria"
+    ]  # Permite filtrar productos por categoría (ejemplo: ?categoria=1)
+
     # Buscar por nombre o descripción
     search_fields = [
         "nombre",
