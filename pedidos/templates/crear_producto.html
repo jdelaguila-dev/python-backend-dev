@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Nuevo Producto{% endblock title %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h2 class="text-center mb-4">👑 Agregar al Menú</h2>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %} {{ form.as_p }}
+
+        <div class="d-grid gap-2 mt-4">
+          <button type="submit" class="btn btn-primary">
+            Guardar Producto
+          </button>
+          <a href="{% url 'menu' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

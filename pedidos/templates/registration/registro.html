@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Cuenta{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm mt-5">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0">📝 Regístrate en BurgerQueen</h4>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors.as_text }}
+                                </div>
+                            {% endif %}
+                            
+                            {% if field.help_text %}
+                                <small class="text-muted d-block mt-1">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Crear Cuenta</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card-footer text-center text-muted">
+                ¿Ya tienes cuenta? <a href="{% url 'login' %}" class="text-decoration-none">Inicia Sesión aquí</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var inputs = document.querySelectorAll('input');
+    inputs.forEach(function(input){
+        input.classList.add('form-control');
+    });
+</script>
+
+
+{% endblock %}
