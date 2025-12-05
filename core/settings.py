@@ -181,5 +181,10 @@ REST_FRAMEWORK = {
         "anon": "10/minute",  # Anónimos: Solo 5 veces por minuto (Prueba agresiva)
         "user": "100/day",  # Usuarios: 100 al día
     },
+    # Filtros
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    # 1. Clase de paginación
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    # 2. Tamaño de página por defecto
+    "PAGE_SIZE": 5,  # Número de elementos por página
 }

@@ -65,6 +65,42 @@ class Command(BaseCommand):
                 "precio": 5.40,
                 "categoria": categorias["Bebidas"],
             },
+            {
+                "nombre": "Refresco Cola",
+                "descripcion": "Bebida gaseosa clásica en lata",
+                "precio": 2.00,
+                "categoria": categorias["Bebidas"],
+            },
+            {
+                "nombre": "Aros de Cebolla",
+                "descripcion": "Aros crujientes con salsa tártara",
+                "precio": 3.80,
+                "categoria": categorias["Acompañamientos"],
+            },
+            {
+                "nombre": "Veggie Delight",
+                "descripcion": "Hamburguesa vegetariana con aguacate y brotes frescos",
+                "precio": 9.20,
+                "categoria": categorias["Hamburguesas"],
+            },
+            {
+                "nombre": "Malteada Vainilla",
+                "descripcion": "Helado de vainilla con leche entera",
+                "precio": 5.40,
+                "categoria": categorias["Bebidas"],
+            },
+            {
+                "nombre": "Papas con Queso y Tocino",
+                "descripcion": "Papas fritas cubiertas con queso derretido y trozos de tocino",
+                "precio": 6.00,
+                "categoria": categorias["Acompañamientos"],
+            },
+            {
+                "nombre": "Doble Queso",
+                "descripcion": "Doble carne con doble queso cheddar",
+                "precio": 11.50,
+                "categoria": categorias["Hamburguesas"],
+            },
         ]
         productos = []
         for campos in catalog:
