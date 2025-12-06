@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -24,6 +25,11 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+
+
+def home(request):
+    return HttpResponse("Saludos desde la página principal de la aplicación Core!")
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -36,6 +42,8 @@ urlpatterns = [
     # Rutas para JWT
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # Ruta para la página de inicio
+    path("", home, name="home"),
 ]
 
 # Configuración para servir archivos media en desarrollo
