@@ -139,9 +139,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# Define STATIC_ROOT unconditionally so collectstatic works even if DEBUG=True
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
+if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
