@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "pedidos",
     "corsheaders",  # App que gestiona las cabeceras
     "django_filters",  # Filtros avanzados para DRF
+    "drf_spectacular",  # Documentación automática de la API
 ]
 
 MIDDLEWARE = [
@@ -187,4 +188,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     # 2. Tamaño de página por defecto
     "PAGE_SIZE": 5,  # Número de elementos por página
+    # Configuración de drf-spectacular
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
