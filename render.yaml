@@ -10,7 +10,7 @@ services:
     name: mysite
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn core.asgi:application -k uvicorn.workers.UvicornWorker"
+    startCommand: "gunicorn core.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -23,6 +23,6 @@ services:
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
-        value: ".onrender.com"
+        value: ".onrender.com,python-backend-dev.onrender.com"
       - key: CORS_ALLOW_ALL_ORIGINS
         value: "True"

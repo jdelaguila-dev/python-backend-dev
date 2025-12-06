@@ -57,7 +57,6 @@ MIDDLEWARE = [
     # Debe interceptar la petición ANTES de que Django intente procesarla.
     # Si la pones al final, Django podría bloquear la petición antes de saber que es válida por CORS.
     "corsheaders.middleware.CorsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
