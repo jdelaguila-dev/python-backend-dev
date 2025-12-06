@@ -34,4 +34,4 @@ def test_string_representation_producto():
     )
 
     # Verificamos que el __str__ funcione como dijimos ("Burger ($10.00)")
-    assert str(producto) == "Burger - ${3.00} - (Hamburguesas)"
+    assert str(producto) == "Burger - Hamburguesas ($3.00)"
