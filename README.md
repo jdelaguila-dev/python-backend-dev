@@ -135,4 +135,4 @@ El sistema utiliza 3 tablas principales (definidas en `pedidos/models.py`):
 | Crear superusuario | `python manage.py createsuperuser` |
 | Poblar datos de ejemplo | `python manage.py seed_data` |
 
-¡Disfruta programando con Django! 🐍✨
+¡Disfruta programando con Django!
