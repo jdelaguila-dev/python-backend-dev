@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-64$y1@&8hu70-&9=uk=(r!76+^i6qt3rrz$(**bn)wb1=ksg9l"
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-default-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["python-backend-dev-j24l.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -97,7 +100,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default="postgresql://burger_queen_db_user:Re4b1sXBgdzPSY4hKlQKczVXw8ViYf5J@dpg-d4ofgma4d50c738rlai0-a.oregon-postgres.render.com/burger_queen_db",
+        default="sqlite:///db.sqlite3",
         conn_max_age=600,
     )
 }
