@@ -55,7 +55,6 @@ MIDDLEWARE = [
     # Debe interceptar la petición ANTES de que Django intente procesarla.
     # Si la pones al final, Django podría bloquear la petición antes de saber que es válida por CORS.
     "corsheaders.middleware.CorsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -66,14 +65,24 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# Permitir todas las solicitudes CORS (no recomendado para producción)
-CORS_ALLOW_ALL_ORIGINS = True
+# # Permitir todas las solicitudes CORS (no recomendado para producción)
+# CORS_ALLOW_ALL_ORIGINS = True
+
+# --------------------------
+# CORS
+# --------------------------
+
+CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False") == "True"
 
 
 # CORS_ALLOW_ALL_ORIGINS = [
 #     "http://localhost:3000",  # Permitir solicitudes desde este origen
 #     "http://www.tu-dominio.com",  # Permitir solicitudes desde este dominio
 # ]
+
+# --------------------------
+# Plantillas
+# --------------------------
 
 ROOT_URLCONF = "core.urls"
 
@@ -137,6 +146,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+# --------------------------
+# Archivos estáticos
+# --------------------------
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
