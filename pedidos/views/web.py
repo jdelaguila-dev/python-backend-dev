@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.core.paginator import Paginator
+
 
 from ..forms import PedidoForm, ProductoForm
 from ..models import Producto, Categoria
@@ -37,10 +39,18 @@ def menu_view(request):
     # Traemos las categorías para llenar el <select> del filtro
     categorias = Categoria.objects.all()
 
+    # 5. Configurar Paginacion
+    # Mostrar 10 productos por página
+    paginator = Paginator(productos, 6)
+    # Obtener el número de página de los parámetros de la URL
+    page_number = request.GET.get("page")
+    # Obtener los productos de la página solicitada
+    page_obj = paginator.get_page(page_number)
+
     # Renderizar la plantilla HTML
     # Es el "carrito" donde enviamos los datos al HTML
     context = {
-        "productos": productos,
+        "productos": page_obj,  # Enviamos los productos paginados
         "categorias": categorias,  # Enviamos categorías al template
     }
     # Renderizar (Pintar) la plantilla

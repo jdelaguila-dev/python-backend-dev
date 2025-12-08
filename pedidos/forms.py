@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from .models import Pedido, Producto
 
 
@@ -44,3 +45,11 @@ class ProductoForm(forms.ModelForm):
             # El input de archivo también se puede estilizar
             "imagen": forms.FileInput(attrs={"class": "form-control"}),
         }
+
+    # Validación personalizada para el campo 'precio'
+    def clean_precio(self):
+        precio = self.cleaned_data.get("precio")  # Obtener el valor del campo 'precio'
+        # REGLA: El precio debe ser mayor a cero
+        if precio <= 0:
+            raise ValidationError("El precio debe ser mayor a cero.")
+        return precio

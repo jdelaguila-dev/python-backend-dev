@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv  # Para cargar variables de entorno desde un archivo .env
+import dj_database_url  # Para gestionar la base de datos desde una URL
+
+# Cargar variables del archivo .env
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-64$y1@&8hu70-&9=uk=(r!76+^i6qt3rrz$(**bn)wb1=ksg9l"
+# --------------------------
+# 🔐 Seguridad y configuración
+# --------------------------
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.getenv("SECRET_KEY", "change-this")
 
-ALLOWED_HOSTS = []
+DEBUG = os.getenv("DEBUG", "False") == "True"
+
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
@@ -50,8 +57,8 @@ MIDDLEWARE = [
     # Debe interceptar la petición ANTES de que Django intente procesarla.
     # Si la pones al final, Django podría bloquear la petición antes de saber que es válida por CORS.
     "corsheaders.middleware.CorsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -61,14 +68,24 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# Permitir todas las solicitudes CORS (no recomendado para producción)
-CORS_ALLOW_ALL_ORIGINS = True
+# # Permitir todas las solicitudes CORS (no recomendado para producción)
+# CORS_ALLOW_ALL_ORIGINS = True
+
+# --------------------------
+# CORS
+# --------------------------
+
+CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False") == "True"
 
 
 # CORS_ALLOW_ALL_ORIGINS = [
 #     "http://localhost:3000",  # Permitir solicitudes desde este origen
 #     "http://www.tu-dominio.com",  # Permitir solicitudes desde este dominio
 # ]
+
+# --------------------------
+# Plantillas
+# --------------------------
 
 ROOT_URLCONF = "core.urls"
 
@@ -90,26 +107,28 @@ TEMPLATES = [
 WSGI_APPLICATION = "core.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# --------------------------
+# Base de datos
+# --------------------------
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "burger_queen_db",
-        "USER": "postgres",  # El usuario por defecto suele ser postgres
-        "PASSWORD": "admin123",  # La contraseña que pusieron al instalar Postgres
-        "HOST": "localhost",  # O la IP del servidor
-        "PORT": "5432",  # Puerto estándar
+if DATABASE_URL:
+    # Replace the SQLite DATABASES configuration with PostgreSQL:
+    DATABASES = {
+        "default": dj_database_url.config(
+            # Replace this value with your local database's connection string.
+            default=DATABASE_URL,
+            conn_max_age=600,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
@@ -143,19 +162,26 @@ USE_I18N = True
 USE_TZ = True
 
 
+# --------------------------
+# Archivos estáticos
+# --------------------------
+
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+# This setting informs Django of the URI path from which your static files will be served to users
+# Here, they well be accessible at your-domain.onrender.com/static/... or yourcustomdomain.com/static/...
+STATIC_URL = "/static/"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+# This production code might break development mode, so we check whether we're in DEBUG mode
+if not DEBUG:
+    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Media files
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Configuración de login
 LOGIN_REDIRECT_URL = "menu"
@@ -181,5 +207,10 @@ REST_FRAMEWORK = {
         "anon": "10/minute",  # Anónimos: Solo 5 veces por minuto (Prueba agresiva)
         "user": "100/day",  # Usuarios: 100 al día
     },
+    # Filtros
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    # 1. Clase de paginación
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    # 2. Tamaño de página por defecto
+    "PAGE_SIZE": 5,  # Número de elementos por página
 }

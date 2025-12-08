@@ -2,6 +2,8 @@ from rest_framework import viewsets, filters as drf_filters
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from django_filters import rest_framework as filters
 
+from pedidos.pagination import PaginacionGrande
+
 from ..models import Producto, Categoria, Pedido
 from ..serializers import ProductoSerializer, CategoriaSerializer, PedidoSerializer
 
@@ -30,7 +32,17 @@ class ProductoFilter(filters.FilterSet):
 # ViewSet: ¡Hace la magia completa!
 # Crea automáticamente la lógica para: Listar, Crear, Ver Detalle, Actualizar y Borrar.
 class ProductoViewSet(viewsets.ModelViewSet):
-    queryset = Producto.objects.all()
+    # ANTES (Malo):
+    # queryset = Producto.objects.all()
+
+    # AHORA (Optimizado):
+    # select_related -> Para ForeignKeys (1:N) -> Ej: Categoria
+    # prefetch_related -> Para ManyToMany (N:N) -> Ej: Ingredientes
+    queryset = (
+        Producto.objects.all()
+        .select_related("categoria")
+        .prefetch_related("ingredientes")
+    )
     serializer_class = ProductoSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -66,6 +78,9 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    # ESTO ANULA LA PAGINACIÓN GLOBAL
+    # Al poner None, DRF ignora el settings.py y devuelve la lista plana [{}, {}, {}]
+    pagination_class = None
 
 
 # ViewSet para Pedido
@@ -73,6 +88,10 @@ class CategoriaViewSet(viewsets.ModelViewSet):
 # Son datos sensibles de clientes.
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
+    # queryset = Pedido.objects.all().select_related("producto")
+
     serializer_class = PedidoSerializer
     # AGREGAR ESTO (Ojo que es diferente al de productos):
     permission_classes = [IsAuthenticated]
+    # ✅ USAR TU PAGINACIÓN ESPECÍFICA
+    pagination_class = PaginacionGrande
