@@ -2,11 +2,50 @@
 
 <div class="container">
   <h1 class="text-center my-4">🍔 Menú BurgerQueen</h1>
+  <div class="card p-4 mb-4 bg-light">
+        <form method="GET" class="row g-3">
+            
+            <div class="col-md-6">
+                <input type="text" name="q" class="form-control" placeholder="¿Qué se te antoja hoy? (Ej: Doble)" value="{{ request.GET.q }}">
+            </div>
+
+            <div class="col-md-4">
+                <select name="cat" class="form-select">
+                    <option value="">Todas las Categorías</option>
+                    {% for cat in categorias %}
+                        <option value="{{ cat.id }}" {% if request.GET.cat == cat.id|stringformat:"i" %}selected{% endif %}>
+                            {{ cat.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+            
+            <div class="col-12 text-end">
+                <a href="{% url 'menu' %}" class="text-decoration-none small text-muted">Limpiar filtros</a>
+            </div>
+        </form>
+    </div>
 
   <div class="row">
     {% for producto in productos %}
     <div class="col-md-4 mb-3">
       <div class="card">
+
+        {% if producto.imagen %}
+        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 300px; object-fit: cover">
+        {% else %}
+        <img
+          src="https://placehold.co/300x200?text=Sin+Imagen"
+          class="card-img-top"
+          alt="Sin imagen"
+        />        
+        {% endif %}
+
+
         <div class="card-body">
           <a
             href="{% url 'detalle_producto' producto.pk %}"

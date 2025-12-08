@@ -14,11 +14,47 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+
+def home(request):
+    return HttpResponse("Saludos desde la página principal de la aplicación Core!")
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # Delegamos todo lo que empiece con "menu/" a nuestra app de pedidos
-    path('menu/', include('pedidos.urls')),
+    path("admin/", admin.site.urls),
+    # Esto habilita /accounts/login/, /accounts/logout/, etc.
+    path("accounts/", include("django.contrib.auth.urls")),
+    # RUTA WEB (MVT) - Todo lo visual entra por /menu/
+    path("menu/", include("pedidos.urls")),
+    # RUTA API (DRF) - Todo lo de la API entra por /api/
+    path("api/", include("pedidos.api_urls")),
+    # Rutas para JWT
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # Ruta para la página de inicio
+    path("", home, name="home"),
+    # Archivo YAML de la especificación OpenAPI
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    # Interfaz Swagger para la documentación de la API
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
 ]
+
+# Configuración para servir archivos media en desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

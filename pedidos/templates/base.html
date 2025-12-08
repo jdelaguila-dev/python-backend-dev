@@ -44,6 +44,27 @@
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'menu' %}">Ver Menú</a>
             </li>
+
+            {% if user.is_authenticated %}
+            {% if user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link fw-bold text-primary" href="{% url 'dashboard' %}">⚙️ Dashboard</a>
+            </li>
+            {% endif %}
+            <li class="nav-item ms-3">
+                <span class="navbar-text me-2">Hola, {{ user.username }}</span>
+                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Salir</button>
+                </form>
+            </li>
+          {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Soy el Dueño</a>
+            </li>
+          {% endif %}
+
+            
             <li class="nav-item">
               <a
                 class="nav-link"
