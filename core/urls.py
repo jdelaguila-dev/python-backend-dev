@@ -17,9 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.http import HttpResponse
+from django.http import HttpResponse
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -28,7 +30,7 @@ from rest_framework_simplejwt.views import (
 
 
 def home(request):
-    return HttpResponse("Servicio Django funcionando correctamente 🚀")
+    return HttpResponse("Saludos desde la página principal de la aplicación Core!")
 
 
 urlpatterns = [
@@ -42,7 +44,16 @@ urlpatterns = [
     # Rutas para JWT
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("", home),
+    # Ruta para la página de inicio
+    path("", home, name="home"),
+    # Archivo YAML de la especificación OpenAPI
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    # Interfaz Swagger para la documentación de la API
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
 ]
 
 # Configuración para servir archivos media en desarrollo

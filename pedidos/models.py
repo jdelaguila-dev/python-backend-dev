@@ -47,7 +47,7 @@ class Producto(models.Model):
 
     # MÉTODOS MÁGICOS: __str__
     def __str__(self):
-        return f"{self.nombre} - (${self.precio}) - ({self.categoria.nombre})"
+        return f"{self.nombre} - {self.categoria.nombre} (${self.precio:.2f})"
 
 
 # 3. Crear el modelo Pedido
