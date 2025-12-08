@@ -125,7 +125,7 @@ El sistema utiliza 3 tablas principales (definidas en `pedidos/models.py`):
 
 ---
 
-## 🛠️ Comandos Útiles
+## Comandos Útiles
 
 | Acción | Comando |
 |--------|---------|
