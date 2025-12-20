@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # SERVICIO 1: Nuestra web (Django)
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000" # Puerto PC : Puerto Contenedor
+    depends_on:
+      - db # Espera a que la base de datos inicie antes de iniciar el servicio web
+    environment:
+      - SECRET_KEY=clave_secreta_para_docker
+      - DEBUG=True
+      # Configuración para conectar a la DB de abajo
+      - DB_NAME=burger_db
+      - DB_USER=burger_user
+      - DB_PASSWORD=burger_password
+      - DB_HOST=db
+      - DB_PORT=5432
+
+  # SERVICIO 2: Base de datos (PostgreSQL)
+  db:
+    image: postgres:15
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=burger_db
+      - POSTGRES_USER=burger_user
+      - POSTGRES_PASSWORD=burger_password
+
+volumes:
+  db_data:
